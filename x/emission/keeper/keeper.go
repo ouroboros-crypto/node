@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
@@ -57,8 +56,6 @@ func (k Keeper) SetEmission(ctx sdk.Context, emission types.Emission, coin coins
 	if !coin.Default {
 		key = []byte(coin.Symbol)
 	}
-
-	fmt.Println("Store set", key)
 
 	store.Set(key, k.Cdc.MustMarshalBinaryBare(emission))
 }
