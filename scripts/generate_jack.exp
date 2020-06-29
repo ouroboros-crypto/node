@@ -1,0 +1,10 @@
+#!/usr/bin/expect
+
+set "pass" "abcdef123"
+set "jack_mnemonic" "then wink parrot mistake decorate tip pioneer affair evidence tail cream damage kite other file swamp rate cargo sudden risk space fatal mimic admit"
+
+spawn appcli keys add jack --recover
+
+send "$jack_mnemonic\r"
+
+interact

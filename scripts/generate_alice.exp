@@ -1,0 +1,10 @@
+#!/usr/bin/expect
+
+set "pass" "abcdef123"
+set "alice_mnemonic" "evidence crop sunny need subway gauge picture misery beach penalty worth someone reunion gasp almost weasel deal sweet fog clarify twin impact car benefit"
+
+spawn appcli keys add alice --recover
+
+send "$alice_mnemonic\r"
+
+interact
