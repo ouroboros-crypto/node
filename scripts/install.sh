@@ -16,7 +16,7 @@ then
   ouroboroscli config output json
   ouroboroscli config indent true
   ouroboroscli config trust-node true
-  ouroboroscli config node tcp://node2.ouroboros-crypto.com:26657
+  ouroboroscli config node tcp://127.0.0.1:26657
 fi
 
 if [ ! -f "~/.ouroborosd/config/genesis.json" ]
