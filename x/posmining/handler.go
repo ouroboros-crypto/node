@@ -24,7 +24,13 @@ func NewHandler(k Keeper) sdk.Handler {
 
 // Handles reinvest
 func handleReinvest(ctx sdk.Context, k Keeper, msg types.MsgReinvest) (*sdk.Result, error) {
-	reinvested := k.ChargePosmining(ctx, msg.Owner, msg.Coin, true)
+	realCoin, err := k.CoinsKeeper.GetCoin(ctx, msg.Coin.Symbol)
+
+	if err != nil {
+		return &sdk.Result{}, err
+	}
+
+	reinvested := k.ChargePosmining(ctx, msg.Owner, realCoin, true)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
