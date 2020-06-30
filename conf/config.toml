@@ -172,7 +172,9 @@ external_address = ""
 seeds = ""
 
 # Comma separated list of nodes to keep persistent connections to
-persistent_peers = "70930591086f0f1298a889332aa7826e9344c9e0@ec2-3-249-163-206.eu-west-1.compute.amazonaws.com:26656"
+#persistent_peers = "70930591086f0f1298a889332aa7826e9344c9e0@ec2-3-249-163-206.eu-west-1.compute.amazonaws.com:26656"
+persistent_peers = ""
+
 
 # UPNP port forwarding
 upnp = false
