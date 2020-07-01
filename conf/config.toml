@@ -172,7 +172,7 @@ external_address = ""
 seeds = "d20b17bf844b331e22f794c2d7c85fe3cd738d5b@34.242.189.98:26656"
 
 # Comma separated list of nodes to keep persistent connections to
-persistent_peers = "d6b9afb0ad37cd6e435bd561230b7b4a61280c51@5.101.120.160:26656,f28cad8c2b99dc73ce87ae7f15d7180ba8fc4e47@144.91.98.92:26656,0334784212973ceb7ce22be12d9c835c9cf515fb@167.71.70.181:26656,7658c94e2a1c86130e768c400bbbc08f11e7ba8a@ec2-34-243-153-24.eu-west-1.compute.amazonaws.com:26656,70930591086f0f1298a889332aa7826e9344c9e0@ec2-3-249-219-51.eu-west-1.compute.amazonaws.com:26656,1e4ace55604308921d20d34f9848e4b33c871e43@ec2-3-249-163-206.eu-west-1.compute.amazonaws.com:26656,fbd76d39105ca5ef0c0c3a303a0ff6a48e6a19da@ec2-34-244-183-248.eu-west-1.compute.amazonaws.com:26656,6d9683c7665021373d66846427f4d2151f2c4829@ec2-63-33-201-131.eu-west-1.compute.amazonaws.com:26656,bae3fd9756b6bfd8dfc4935eb679c5c760870d9b@34.244.162.23:26656,1945cc1516768f18944db521cc8c62c746007da9@34.255.2.209:26656,fd0c1dd7b658710f5e7c9c53df999db150f624e3@34.244.100.180:26656"
+persistent_peers = "d6b9afb0ad37cd6e435bd561230b7b4a61280c51@5.101.120.160:26656,7658c94e2a1c86130e768c400bbbc08f11e7ba8a@ec2-34-243-153-24.eu-west-1.compute.amazonaws.com:26656,70930591086f0f1298a889332aa7826e9344c9e0@ec2-3-249-219-51.eu-west-1.compute.amazonaws.com:26656,1e4ace55604308921d20d34f9848e4b33c871e43@ec2-3-249-163-206.eu-west-1.compute.amazonaws.com:26656,fbd76d39105ca5ef0c0c3a303a0ff6a48e6a19da@ec2-34-244-183-248.eu-west-1.compute.amazonaws.com:26656,6d9683c7665021373d66846427f4d2151f2c4829@ec2-63-33-201-131.eu-west-1.compute.amazonaws.com:26656,bae3fd9756b6bfd8dfc4935eb679c5c760870d9b@34.244.162.23:26656,1945cc1516768f18944db521cc8c62c746007da9@34.255.2.209:26656,fd0c1dd7b658710f5e7c9c53df999db150f624e3@34.244.100.180:26656"
 
 
 # UPNP port forwarding
@@ -204,10 +204,10 @@ flush_throttle_timeout = "100ms"
 max_packet_msg_payload_size = 1024
 
 # Rate at which packets can be sent, in bytes/second
-send_rate = 5120000
+send_rate = 40960000
 
 # Rate at which packets can be received, in bytes/second
-recv_rate = 5120000
+recv_rate = 40960000
 
 # Set true to enable the peer-exchange reactor
 pex = true
@@ -222,7 +222,7 @@ seed_mode = false
 private_peer_ids = ""
 
 # Toggle to disable guard against peers connecting from the same ip.
-allow_duplicate_ip = false
+allow_duplicate_ip = true
 
 # Peer connection configuration.
 handshake_timeout = "20s"
@@ -329,7 +329,7 @@ prometheus_listen_addr = ":26660"
 # If you want to accept a larger number than the default, make sure
 # you increase your OS limits.
 # 0 - unlimited.
-max_open_connections = 12
+max_open_connections = 0
 
 # Instrumentation namespace
 namespace = "tendermint"
