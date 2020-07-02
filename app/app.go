@@ -7,16 +7,12 @@ import (
 	"github.com/ouroboros-crypto/node/x/ouroboros"
 	"github.com/ouroboros-crypto/node/x/posmining"
 	"github.com/ouroboros-crypto/node/x/structure"
-	"io"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"time"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
+	"io"
+	"os"
 
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -403,7 +399,7 @@ func (app *NewApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abc
 func (app *NewApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
 	// Check if we should change regulation based on the price every 100 blocks
 	if ctx.BlockHeight() % 100 == 0 {
-		client := http.Client{
+		/*client := http.Client{
 			Timeout: 5 * time.Second, // 5 seconds timeout
 		}
 
@@ -420,9 +416,9 @@ func (app *NewApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.Re
 		// Some problems with parsing the body
 		if err != nil {
 			return app.mm.EndBlock(ctx, req)
-		}
+		}*/
 
-		price, isOk := sdk.NewIntFromString(string(body))
+		price, isOk := sdk.NewIntFromString("1")
 
 		if !isOk {
 			return app.mm.EndBlock(ctx, req)
