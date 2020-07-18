@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/ouroboros-crypto/node/x/coins"
 	"github.com/ouroboros-crypto/node/x/emission"
 	"github.com/ouroboros-crypto/node/x/ouroboros"
@@ -13,6 +14,7 @@ import (
 	dbm "github.com/tendermint/tm-db"
 	"io"
 	"os"
+	"runtime"
 
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -36,11 +38,11 @@ import (
 const appName = "ouroboros"
 
 var (
-	// DefaultCLIHome default home directories for the application CLI
-	DefaultCLIHome = os.ExpandEnv("$HOME/.ouroboroscli")
+	// default home directories for the application CLI
+	DefaultCLIHome = getCliPath()
 
 	// DefaultNodeHome sets the folder where the applcation data and configuration will be stored
-	DefaultNodeHome = os.ExpandEnv("$HOME/.ouroborosd")
+	DefaultNodeHome = getNodePath()
 
 	// ModuleBasics The module BasicManager is in charge of setting up basic,
 	// non-dependant module elements, such as codec registration
@@ -399,6 +401,7 @@ func (app *NewApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abc
 func (app *NewApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
 	// Check if we should change regulation based on the price every 100 blocks
 	if ctx.BlockHeight() % 100 == 0 {
+		fmt.Println(ctx.BlockHeight())
 		/*client := http.Client{
 			Timeout: 5 * time.Second, // 5 seconds timeout
 		}
@@ -420,7 +423,7 @@ func (app *NewApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.Re
 
 		price, isOk := sdk.NewIntFromString("1")
 
-		if !isOk {
+		if !isOk || (ctx.BlockHeight() >= 272100 && ctx.BlockHeight() <= 272105) {
 			return app.mm.EndBlock(ctx, req)
 		}
 
@@ -464,4 +467,20 @@ func GetMaccPerms() map[string][]string {
 		modAccPerms[k] = v
 	}
 	return modAccPerms
+}
+
+func getCliPath() string {
+	if runtime.GOOS == "windows" {
+		return os.ExpandEnv("$UserProfile/.ouroboroscli")
+	}
+
+	return os.ExpandEnv("$HOME/.ouroboroscli")
+}
+
+func getNodePath() string {
+	if runtime.GOOS == "windows" {
+		return os.ExpandEnv("$UserProfile/.ouroborosd")
+	}
+
+	return os.ExpandEnv("$HOME/.ouroborosd")
 }
