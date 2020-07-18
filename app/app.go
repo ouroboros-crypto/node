@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/ouroboros-crypto/node/x/coins"
 	"github.com/ouroboros-crypto/node/x/emission"
 	"github.com/ouroboros-crypto/node/x/ouroboros"
@@ -401,7 +400,6 @@ func (app *NewApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abc
 func (app *NewApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
 	// Check if we should change regulation based on the price every 100 blocks
 	if ctx.BlockHeight() % 100 == 0 {
-		fmt.Println(ctx.BlockHeight())
 		/*client := http.Client{
 			Timeout: 5 * time.Second, // 5 seconds timeout
 		}
@@ -423,7 +421,7 @@ func (app *NewApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.Re
 
 		price, isOk := sdk.NewIntFromString("1")
 
-		if !isOk || (ctx.BlockHeight() >= 272100 && ctx.BlockHeight() <= 272105) {
+		if !isOk {
 			return app.mm.EndBlock(ctx, req)
 		}
 
