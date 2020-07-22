@@ -306,12 +306,11 @@ func NewInitApp(
 		coins.NewAppModule(app.coinsKeeper, app.bankKeeper),
 		posmining.NewAppModule(app.posminingKeeper),
 		structure.NewAppModule(app.structureKeeper),
-		ouroboros.NewAppModule(app.ouroKeeper),
+		ouroboros.NewAppModule(app.ouroKeeper, app.paramsKeeper, app.bankKeeper, app.emissionKeeper),
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		distr.NewAppModule(app.distrKeeper, app.accountKeeper, app.supplyKeeper, app.stakingKeeper),
 		gov.NewAppModule(app.govKeeper, app.accountKeeper, app.supplyKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.accountKeeper, app.stakingKeeper),
-		// TODO: Add your module(s)
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.accountKeeper, app.stakingKeeper),
 
@@ -399,7 +398,7 @@ func (app *NewApp) BeginBlocker(ctx sdk.Context, req abci.RequestBeginBlock) abc
 // EndBlocker application updates every end block
 func (app *NewApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.ResponseEndBlock {
 	// Check if we should change regulation based on the price every 100 blocks
-	if ctx.BlockHeight() % 100 == 0 {
+	if ctx.BlockHeight()%100 == 0 {
 		/*client := http.Client{
 			Timeout: 5 * time.Second, // 5 seconds timeout
 		}

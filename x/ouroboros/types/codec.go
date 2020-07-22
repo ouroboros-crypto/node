@@ -6,7 +6,8 @@ import (
 
 // RegisterCodec registers concrete types on codec
 func RegisterCodec(cdc *codec.Codec) {
-	// TODO: Register the modules msgs
+	cdc.RegisterConcrete(MsgChangeParams{}, "ouroboros/ChangeParams", nil)
+	cdc.RegisterConcrete(MsgRestoreUnbonding{}, "ouroboros/MsgRestoreUnbonding", nil)
 }
 
 // ModuleCdc defines the module codec

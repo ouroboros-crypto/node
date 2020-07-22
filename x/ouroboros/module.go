@@ -2,6 +2,8 @@ package ouroboros
 
 import (
 	"encoding/json"
+	"github.com/cosmos/cosmos-sdk/x/params"
+	"github.com/ouroboros-crypto/node/x/emission"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -12,14 +14,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/ouroboros-crypto/node/x/bank"
 	"github.com/ouroboros-crypto/node/x/ouroboros/client/cli"
 	"github.com/ouroboros-crypto/node/x/ouroboros/client/rest"
 )
 
 // Type check to ensure the interface is properly implemented
 var (
-	_ module.AppModule           = AppModule{}
-	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.AppModule      = AppModule{}
+	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
 // AppModuleBasic defines the basic application module used by the ouroboros module.
@@ -72,16 +75,20 @@ func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper        Keeper
-	// TODO: Add keepers that your application depends on
+	keeper         Keeper
+	paramsKeeper   params.Keeper
+	bankKeeper     bank.Keeper
+	emissionKeeper emission.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(k Keeper, /*TODO: Add Keepers that your application depends on*/) AppModule {
+func NewAppModule(k Keeper, paramsKeeper params.Keeper, bankKeeper bank.Keeper, emissionKeeper emission.Keeper) AppModule {
 	return AppModule{
-		AppModuleBasic:      AppModuleBasic{},
-		keeper:              k,
-		// TODO: Add keepers that your application depends on
+		AppModuleBasic: AppModuleBasic{},
+		keeper:         k,
+		paramsKeeper:   paramsKeeper,
+		bankKeeper:     bankKeeper,
+		emissionKeeper: emissionKeeper,
 	}
 }
 
@@ -100,7 +107,7 @@ func (AppModule) Route() string {
 
 // NewHandler returns an sdk.Handler for the ouroboros module.
 func (am AppModule) NewHandler() sdk.Handler {
-	return NewHandler(am.keeper)
+	return NewHandler(am.keeper, am.paramsKeeper, am.bankKeeper, am.emissionKeeper)
 }
 
 // QuerierRoute returns the ouroboros module's querier route name.

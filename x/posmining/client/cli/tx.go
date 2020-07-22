@@ -29,8 +29,6 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 
 	posminingTxCmd.AddCommand(flags.PostCommands(
 		GetCmdReinvest(cdc),
-		// TODO: Add tx based commands
-		// GetCmd<Action>(cdc)
 	)...)
 
 	return posminingTxCmd
