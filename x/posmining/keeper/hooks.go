@@ -53,7 +53,6 @@ func (k Keeper) GenerateAfterTransferHook() func(ctx sdk.Context, from sdk.AccAd
 			k.UpdateDailyPercent(ctx, sender, coinRecord)
 			k.UpdateDailyPercent(ctx, receiver, coinRecord)
 		}
-
 	}
 }
 

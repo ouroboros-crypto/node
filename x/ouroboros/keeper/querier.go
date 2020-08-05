@@ -38,7 +38,7 @@ func queryProfile(ctx sdk.Context, path []string, req abci.RequestQuery, keeper 
 
 	balance := bankKeeper.GetCoins(ctx, addr)
 
-	posmining := keeper.posminingKeeper.GetPosminingResolve(ctx, addr, coin)
+	posmining := keeper.PosminingKeeper.GetPosminingResolve(ctx, addr, coin)
 
 	res, codecErr := codec.MarshalJSONIndent(keeper.cdc, types.ProfileResolve{
 		Owner: addr,

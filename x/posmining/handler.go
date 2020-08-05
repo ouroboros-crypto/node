@@ -3,6 +3,7 @@ package posmining
 import (
 	"fmt"
 	"github.com/ouroboros-crypto/node/x/posmining/types"
+	"github.com/ouroboros-crypto/node/x/update"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -31,6 +32,11 @@ func handleReinvest(ctx sdk.Context, k Keeper, msg types.MsgReinvest) (*sdk.Resu
 	}
 
 	reinvested := k.ChargePosmining(ctx, msg.Owner, realCoin, true)
+
+	// @todo Remove that once we're updated
+	if ctx.BlockHeight() > update.UpdateAfterBlock {
+		k.UpdateDailyPercent(ctx, msg.Owner, realCoin)
+	}
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(

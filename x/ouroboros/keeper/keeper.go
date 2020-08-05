@@ -20,14 +20,14 @@ import (
 
 // Keeper of the ouroboros store
 type Keeper struct {
-	accountKeeper    auth.AccountKeeper
-	coinKeeper       bank.Keeper
-	CoinsKeeper      coins.Keeper
-	structureKeeper  structure.Keeper
-	posminingKeeper posmining.Keeper
-	emissionKeeper   emission.Keeper
-	supplyKeeper     supply.Keeper
-	slashingKeeper   slashing.Keeper
+	accountKeeper   auth.AccountKeeper
+	coinKeeper      bank.Keeper
+	CoinsKeeper     coins.Keeper
+	structureKeeper structure.Keeper
+	PosminingKeeper posmining.Keeper
+	emissionKeeper  emission.Keeper
+	supplyKeeper    supply.Keeper
+	slashingKeeper  slashing.Keeper
 
 	cdc *codec.Codec
 }
@@ -35,15 +35,15 @@ type Keeper struct {
 // NewKeeper creates a ouroboros keeper
 func NewKeeper(cdc *codec.Codec, accountKeeper auth.AccountKeeper, coinKeeper bank.Keeper, structureKeeper structure.Keeper, posminingKeeper posmining.Keeper, emissionKeeper emission.Keeper, supplyKeeper supply.Keeper, slashingKeeper slashing.Keeper, coinsKeeper coins.Keeper) Keeper {
 	return Keeper{
-		cdc:              cdc,
-		accountKeeper:    accountKeeper,
-		coinKeeper:       coinKeeper,
-		structureKeeper:  structureKeeper,
-		posminingKeeper: posminingKeeper,
-		emissionKeeper:   emissionKeeper,
-		supplyKeeper:     supplyKeeper,
-		slashingKeeper:   slashingKeeper,
-		CoinsKeeper:      coinsKeeper,
+		cdc:             cdc,
+		accountKeeper:   accountKeeper,
+		coinKeeper:      coinKeeper,
+		structureKeeper: structureKeeper,
+		PosminingKeeper: posminingKeeper,
+		emissionKeeper:  emissionKeeper,
+		supplyKeeper:    supplyKeeper,
+		slashingKeeper:  slashingKeeper,
+		CoinsKeeper:     coinsKeeper,
 	}
 }
 

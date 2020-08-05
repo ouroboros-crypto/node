@@ -7,6 +7,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+	"io/ioutil"
+	"net/http"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -27,24 +30,46 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	}
 
 	ouroborosTxCmd.AddCommand(flags.PostCommands(
-		GetCmdChangeParams(cdc),
-		GetCmdRestoreUnbonding(cdc),
+		GetCmdBurnExtra(cdc),
+		GetCmdUpdateRegulation(cdc),
 	)...)
 
 	return ouroborosTxCmd
 }
 
-func GetCmdChangeParams(cdc *codec.Codec) *cobra.Command {
+func GetCmdBurnExtra(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "change-params",
-		Short: "Changes the required param of the system",
+		Use:   "burn-extra",
+		Short: "Burn the extra coins",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 
-			msg := types.NewMsgChangeParams(cliCtx.GetFromAddress())
+			msg := types.NewMsgBurnExtraCoins(cliCtx.GetFromAddress())
+
+			err := msg.ValidateBasic()
+
+			if err != nil {
+				return err
+			}
+
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+}
+func GetCmdUnburnExtra(cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "unburn-extra",
+		Short: "Unburn the extra coins",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+
+			msg := types.NewMsgUnburnExtraCoins(cliCtx.GetFromAddress())
 
 			err := msg.ValidateBasic()
 
@@ -57,19 +82,44 @@ func GetCmdChangeParams(cdc *codec.Codec) *cobra.Command {
 	}
 }
 
-func GetCmdRestoreUnbonding(cdc *codec.Codec) *cobra.Command {
+func GetCmdUpdateRegulation(cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
-		Use:   "restore-unbonding",
-		Short: "Restores the unbonding coins",
+		Use:   "update-regulation",
+		Short: "Updates the regulation",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 
-			msg := types.NewMsgRestoreUnbonding(cliCtx.GetFromAddress())
+			httpClient := http.Client{
+				Timeout: 5 * time.Second, // 5 seconds timeout
+			}
 
-			err := msg.ValidateBasic()
+			resp, err := httpClient.Get("https://api.ouroboros-crypto.com/correction/price")
+
+			if err != nil {
+				return err
+			}
+
+			defer resp.Body.Close()
+
+			body, err := ioutil.ReadAll(resp.Body)
+
+			// Some problems with parsing the body
+			if err != nil {
+				return err
+			}
+
+			price, isOk := sdk.NewIntFromString(string(body))
+
+			if !isOk {
+				return nil
+			}
+
+			msg := types.NewMsgUpdateRegulation(cliCtx.GetFromAddress(), price)
+
+			err = msg.ValidateBasic()
 
 			if err != nil {
 				return err

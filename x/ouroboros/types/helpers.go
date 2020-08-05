@@ -7,3 +7,9 @@ func GetGenesisWallet() sdk.AccAddress {
 
 	return addr
 }
+
+func GetRegulationWallet() sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32("ouro1qxj94wtuet8ct3cdulw4f47lnmfjxweums0zg8")
+
+	return addr
+}
