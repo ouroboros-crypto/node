@@ -1,5 +1,5 @@
 package update
 
 const (
-	UpdateAfterBlock  = 705854 // @todo Set the right one
+	UpdateAfterBlock  = 591741 // @todo Set the right one
 )
