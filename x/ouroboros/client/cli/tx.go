@@ -31,6 +31,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 
 	ouroborosTxCmd.AddCommand(flags.PostCommands(
 		GetCmdBurnExtra(cdc),
+		GetCmdUnburnExtra(cdc),
 		GetCmdUpdateRegulation(cdc),
 	)...)
 
