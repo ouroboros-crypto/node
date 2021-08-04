@@ -22,6 +22,13 @@ func (k Keeper) GetSavingPeriods(ctx sdk.Context, posmining types.Posmining) []t
 		return []types.PosminingPeriod{types.NewPosminingPeriod(lastTx, ctx.BlockTime(), sdk.NewInt(0), sdk.NewInt(0))}
 	}
 
+	updateThreshold, _ := time.Parse(time.RFC822, "09 Aug 21 12:00 UTC")
+
+	// Saving coff won't be working after 09 Aug 21
+	if ctx.BlockHeader().Time.After(updateThreshold) {
+		return []types.PosminingPeriod{types.NewPosminingPeriod(lastTx, ctx.BlockTime(), sdk.NewInt(0), sdk.NewInt(0))}
+	}
+
 	periods := secondsDiff / daysSeparator
 	mod := int64(math.Mod(float64(secondsDiff), float64(daysSeparator)))
 
@@ -150,8 +157,15 @@ func (k Keeper) GetPosminingGroup(ctx sdk.Context, posmining types.Posmining, co
 
 // Calculates how many tokens has been posmined
 func (k Keeper) CalculatePosmined(ctx sdk.Context, posmining types.Posmining, coin coins.Coin, coinsAmount sdk.Int) sdk.Int {
+	updateThreshold, _ := time.Parse(time.RFC822, "09 Aug 21 12:00 UTC")
+
 	// If we have a threshold set and it's already has been reach, we should always return 0
-	if coin.PosminingThreshold.IsPositive() && coinsAmount.GTE(coin.PosminingThreshold) {
+	if ctx.BlockHeader().Time.Before(updateThreshold) && coin.PosminingThreshold.IsPositive() && coinsAmount.GTE(coin.PosminingThreshold) {
+		return sdk.NewInt(0)
+	}
+
+	// If posmining was disabled by the owner
+	if ctx.BlockHeader().Time.After(updateThreshold) && !k.GetPosminingEnabled(ctx, posmining.Owner) {
 		return sdk.NewInt(0)
 	}
 

@@ -69,3 +69,29 @@ func (k Keeper) SetPosmining(ctx sdk.Context, posmining types.Posmining, coin co
 
 	store.Set(key, k.Cdc.MustMarshalBinaryBare(posmining))
 }
+
+// Fetches if posmining is enabled by the owner
+func (k Keeper) GetPosminingEnabled(ctx sdk.Context, owner sdk.AccAddress) bool {
+	store := ctx.KVStore(k.storeKey)
+
+	enabledKey := append(owner.Bytes(), []byte(":enabled")...)
+
+	if !store.Has(enabledKey) {
+		return true
+	}
+
+	var isEnabled bool
+
+	k.Cdc.MustUnmarshalBinaryBare(store.Get(enabledKey), &isEnabled)
+
+	return isEnabled
+}
+
+// Sets the paramining enabled
+func (k Keeper) SetPosminingEnabled(ctx sdk.Context, owner sdk.AccAddress, isEnabled bool) {
+	store := ctx.KVStore(k.storeKey)
+
+	enabledKey := append(owner.Bytes(), []byte(":enabled")...)
+
+	store.Set(enabledKey, k.Cdc.MustMarshalBinaryBare(isEnabled))
+}

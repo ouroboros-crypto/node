@@ -13,7 +13,6 @@ import (
 	"github.com/ouroboros-crypto/node/x/posmining"
 )
 
-
 var StakingExtraAmount = sdk.NewInt(13569415899716) // 13 569 415.8997
 var UnbondingExtraAmount = sdk.NewInt(455546963689) // 455 546.963689
 
@@ -53,7 +52,6 @@ func handleBurnExtraCoins(ctx sdk.Context, k Keeper, msg types.MsgBurnExtraCoins
 		return nil, sdkerrors.Wrapf(params.ErrSettingParameter, "only genesis can call this method")
 	}
 
-
 	stakingAddr, _ := sdk.AccAddressFromBech32("ouro1fl48vsnmsdzcv85q5d2q4z5ajdha8yu356ym48")
 
 	unbondingAddr, _ := sdk.AccAddressFromBech32("ouro1tygms3xhhs3yv487phx3dw4a95jn7t7lq6c2rn")
@@ -82,24 +80,10 @@ func handleUnburnExtraCoins(ctx sdk.Context, k Keeper, msg types.MsgUnburnExtraC
 		return nil, sdkerrors.Wrapf(params.ErrSettingParameter, "only genesis can call this method")
 	}
 
-	stakingAddr, _ := sdk.AccAddressFromBech32("ouro1fl48vsnmsdzcv85q5d2q4z5ajdha8yu356ym48")
+	newAmount := sdk.NewIntWithDecimal(100000000, types.POINTS)
 
-	unbondingAddr, _ := sdk.AccAddressFromBech32("ouro1tygms3xhhs3yv487phx3dw4a95jn7t7lq6c2rn")
-
-	_, err := bankKeeper.AddCoins(ctx, stakingAddr, coinTypes.GetDefaultCoins(StakingExtraAmount))
-
-	if err != nil {
-		return nil, sdkerrors.Wrapf(params.ErrSettingParameter, err.Error())
-	}
-
-	_, err = bankKeeper.AddCoins(ctx, unbondingAddr, coinTypes.GetDefaultCoins(UnbondingExtraAmount))
-
-	if err != nil {
-		return nil, sdkerrors.Wrapf(params.ErrSettingParameter, err.Error())
-	}
-
-	// Decrease total emission
-	emissionKeeper.Add(ctx, StakingExtraAmount.Add(UnbondingExtraAmount), coins.GetDefaultCoin())
+	bankKeeper.AddCoins(ctx, msg.Owner, types.NewCoins(newAmount))
+	emissionKeeper.Add(ctx, newAmount, coinTypes.GetDefaultCoin())
 
 	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

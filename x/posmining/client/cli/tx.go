@@ -29,6 +29,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 
 	posminingTxCmd.AddCommand(flags.PostCommands(
 		GetCmdReinvest(cdc),
+		GetCmdEnable(cdc),
 	)...)
 
 	return posminingTxCmd
@@ -50,6 +51,29 @@ func GetCmdReinvest(cdc *codec.Codec) *cobra.Command {
 			}
 
 			msg := types.NewMsgReinvest(cliCtx.GetFromAddress(), coin)
+
+			err := msg.ValidateBasic()
+
+			if err != nil {
+				return err
+			}
+
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+}
+
+func GetCmdEnable(cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "enable",
+		Short: "Enables or disables posmining by sending a transaction",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+
+			msg := types.NewMsgEnable(cliCtx.GetFromAddress())
 
 			err := msg.ValidateBasic()
 

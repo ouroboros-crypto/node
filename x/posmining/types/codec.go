@@ -8,6 +8,7 @@ import (
 func RegisterCodec(cdc *codec.Codec) {
 	// TODO: Register the modules msgs
 	cdc.RegisterConcrete(MsgReinvest{}, "posmining/Reinvest", nil)
+	cdc.RegisterConcrete(MsgEnable{}, "posmining/Enable", nil)
 }
 
 // ModuleCdc defines the module codec
