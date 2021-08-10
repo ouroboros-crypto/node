@@ -171,7 +171,9 @@ func (k Keeper) CalculatePosmined(ctx sdk.Context, posmining types.Posmining, co
 
 	posmined := posmining.Paramined.Add(k.GetPosminingGroup(ctx, posmining, coin, coinsAmount).Paramined)
 
-	if coin.PosminingThreshold.IsPositive() && posmined.IsPositive() && coinsAmount.Add(posmined).GTE(coin.PosminingThreshold) {
+	fixThreshold, _ := time.Parse(time.RFC822, "13 Aug 21 10:00 UTC")
+
+	if ctx.BlockHeader().Time.Before(fixThreshold) && coin.PosminingThreshold.IsPositive() && posmined.IsPositive() && coinsAmount.Add(posmined).GTE(coin.PosminingThreshold) {
 		posmined = coin.PosminingThreshold.Sub(coinsAmount)
 	}
 

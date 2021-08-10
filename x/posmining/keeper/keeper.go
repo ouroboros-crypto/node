@@ -10,6 +10,7 @@ import (
 	"github.com/ouroboros-crypto/node/x/emission"
 	"github.com/ouroboros-crypto/node/x/posmining/types"
 	"github.com/tendermint/tendermint/libs/log"
+	"time"
 )
 
 // Keeper maintains the link to data storage and exposes getter/setter methods for the various parts of the state machine
@@ -157,7 +158,9 @@ func (k Keeper) GetPosminingResolve(ctx sdk.Context, owner sdk.AccAddress, coin 
 		currentPeriod = types.PosminingPeriod{SavingCoff: sdk.NewInt(0), CorrectionCoff: sdk.NewInt(0)}
 	}
 
-	if coin.PosminingThreshold.IsPositive() && balance.Add(posminingGroup.Paramined).GTE(coin.PosminingThreshold) {
+	fixThreshold, _ := time.Parse(time.RFC822, "13 Aug 21 10:00 UTC")
+
+	if ctx.BlockHeader().Time.Before(fixThreshold) && coin.PosminingThreshold.IsPositive() && balance.Add(posminingGroup.Paramined).GTE(coin.PosminingThreshold) {
 		posminingGroup.Paramined = sdk.NewInt(0)
 
 		if balance.GTE(coin.PosminingThreshold) {
